@@ -1,7 +1,7 @@
 # About
 a simple automated tool to get testing ether from https://www.rinkebyfaucet.com/
 
-## Setup
+## Local Setup
 
 Clone the repo, go to the repo folder, setup the virtual environment, and install the required packages:
 
@@ -21,4 +21,93 @@ FROM_EMAIL='your sendgrid from email'
 TO_EMAIL='the email you want to send notification to'
 ```
 
-Then, run `python send-me-eth.py` every 24 hours to get 0.1 eth from https://www.rinkebyfaucet.com/
+Then, run `python send-me-eth.py` every 24 hours to get 0.1 eth each time.
+
+## Deploy to AWS EC2
+
+I also show how to deploy the script on AWS EC2 with as a timed task.
+
+Create an AWS EC2 Ubuntu instance:
+
+- Ubuntu 20.04 (x86)
+- t2.micro
+- security group with SSH 22 inbound enabled - outbound default all open
+- create a new RSA key pair - download the .cer file
+
+SSH in:
+
+```
+chmod 400 aws-gmail.cer
+ssh -i "aws-gmail.cer" ubuntu@ec2-54-227-212-97.compute-1.amazonaws.com
+```
+
+From the Ubuntu prompt:
+
+```
+git clone https://github.com/harrywang/send-me-eth.git
+cd send-me-eth/
+```
+
+Then create a `.env` file (see above) 
+
+```
+vim .env  # create .env file
+ubuntu@ip-172-31-82-22:~/send-me-eth$ ls
+LICENSE  README.md  requirements.txt  send-me-eth.py
+```
+
+
+
+Then, install/upgrade required packages (Python 3.8.10 is the default):
+```
+python3 --version
+sudo apt update
+sudo apt install python3-pip
+pip3 install -r requirements.txt
+pip3 install --upgrade requests
+```
+
+You need to manually install Chrome:
+
+```
+sudo apt install wget
+wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+sudo apt-get install -f  # run this if run into problem installing chrome next
+sudo dpkg -i google-chrome-stable_current_amd64.deb
+```
+
+Now, you can test the script by running `python3 send-me-eth.py` - you should receive an email. 
+
+Next, use `crontab` to schedule the task (FYI: the word “Cron” comes from the Greek word “Chronos” (time), and `crontab` stands for “Cron table”).
+
+cron schedule expressions has five fields: minute, hour, day of month, month, day of week
+
+You can use https://crontab.guru/ to edit the expression. For example: `*/1 * * * *` means running task every minute and `* */24 * * *` means running task every 24 hours.
+
+We check the path of our default python and our script:
+
+````
+which python3
+/usr/bin/python3
+$ pwd
+/home/ubuntu/send-me-eth
+```
+
+Now, run `crontab -e` to add the following line to the file (I choose vim as the editor), save the file (ESE, then type `:wq`) and you have scheduled a task.
+
+`*/1 * * * * /usr/bin/python3 /home/ubuntu/send-me-eth/send-me-eth.py`
+
+Use `crontab -l` to check the running task:
+
+```
+$ crontab -l
+*/1 * * * * /usr/bin/python3 /home/ubuntu/send-me-eth/send-me-eth.py
+```
+
+Now, you should get an email every minute as a test. 
+
+Finally, you can change the task to run every 24 hours:
+
+`0 */24 * * * /usr/bin/python3 /home/ubuntu/send-me-eth/send-me-eth.py`
+
+Now, you can close the terminal and get 0.1 eth every day without doing anything :). Make sure to delete the cron task when you get enough testing ether.
