@@ -56,8 +56,6 @@ ubuntu@ip-172-31-82-22:~/send-me-eth$ ls
 LICENSE  README.md  requirements.txt  send-me-eth.py
 ```
 
-
-
 Then, install/upgrade required packages (Python 3.8.10 is the default):
 ```
 python3 --version
@@ -86,7 +84,7 @@ You can use https://crontab.guru/ to edit the expression. For example: `*/1 * * 
 
 We check the path of our default python and our script:
 
-````
+```
 which python3
 /usr/bin/python3
 $ pwd
