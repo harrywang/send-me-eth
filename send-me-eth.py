@@ -25,7 +25,7 @@ op.add_argument('--window-size=1920,1080')
 
 driver = webdriver.Chrome(service=s, options=op)
 driver.get("https://www.rinkebyfaucet.com/")
-#assert "Rinkeby" in driver.title
+# assert "Rinkeby" in driver.title
 
 # enter the wallet address
 driver.find_element(By.CLASS_NAME, "alchemy-faucet-panel-input-text").send_keys(WALLET_ADDRESS)
@@ -39,7 +39,7 @@ message = Mail(
     from_email=FROM_EMAIL,
     to_emails=TO_EMAIL,
     subject='Getting More Eth',
-    html_content='<p>Tried to get 0.1 Eth at ' + datetime.now().strftime('%Y-%m-%d %H:%M:%S') +'</p>')
+    html_content='<p>Tried to get 0.1 Eth at ' + datetime.now().strftime('%Y-%m-%d %H:%M:%S') + '</p>')
 try:
     sg = SendGridAPIClient(SENDGRID_API_KEY)
     response = sg.send(message)
@@ -50,5 +50,5 @@ except Exception as e:
     print(e.message)
 
 # use sleep to pause for debugging
-#sleep(5)
+sleep(1)
 driver.close()
