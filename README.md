@@ -25,23 +25,23 @@ Then, run `python send-me-eth.py` every 24 hours to get 0.1 eth each time.
 
 ## Deploy to AWS EC2
 
-I also show how to deploy the script on AWS EC2 with as a timed task.
+I also show how to deploy the script on AWS EC2 as a scheduled task.
 
 Create an AWS EC2 Ubuntu instance:
 
 - Ubuntu 20.04 (x86)
-- t2.micro
-- security group with SSH 22 inbound enabled - outbound default all open
+- t2.micro (free tier)
+- security group with SSH port 22 inbound enabled - outbound default all open
 - create a new RSA key pair - download the .cer file
 
-SSH in:
+SSH to the remote instance, switch to the folder with the `.cer` file:
 
 ```
 chmod 400 aws-gmail.cer
 ssh -i "aws-gmail.cer" ubuntu@ec2-54-227-212-97.compute-1.amazonaws.com
 ```
 
-From the Ubuntu prompt:
+From the remote Ubuntu prompt:
 
 ```
 git clone https://github.com/harrywang/send-me-eth.git
@@ -78,20 +78,20 @@ Now, you can test the script by running `python3 send-me-eth.py` - you should re
 
 Next, use `crontab` to schedule the task (FYI: the word “Cron” comes from the Greek word “Chronos” (time), and `crontab` stands for “Cron table”).
 
-cron schedule expressions has five fields: minute, hour, day of month, month, day of week
+A cron schedule expression has five fields: minute, hour, day of month, month, day of week
 
-You can use https://crontab.guru/ to edit the expression. For example: `*/1 * * * *` means running task every minute and `* */24 * * *` means running task every 24 hours.
+You can use https://crontab.guru/ to edit the expression. For example: `*/1 * * * *` means running task every minute and `5 */24 * * *` means running task at minute 5 past every 24th hour.
 
-We check the path of our default python and our script:
+Check the path of our default python and our script:
 
 ```
 which python3
 /usr/bin/python3
-$ pwd
+pwd
 /home/ubuntu/send-me-eth
 ```
 
-Now, run `crontab -e` to add the following line to the file (I choose vim as the editor), save the file (ESE, then type `:wq`) and you have scheduled a task.
+Now, run `crontab -e` to add the following line to the file (I choose vim as the editor), save the file (press ESC, then type `:wq`) and you have scheduled a task.
 
 `*/1 * * * * /usr/bin/python3 /home/ubuntu/send-me-eth/send-me-eth.py`
 
@@ -104,8 +104,8 @@ $ crontab -l
 
 Now, you should get an email every minute as a test. 
 
-Finally, you can change the task to run every 24 hours:
+Finally, you can change the task to run at minute 5 past every 24th hour:
 
-`0 */24 * * * /usr/bin/python3 /home/ubuntu/send-me-eth/send-me-eth.py`
+`5 */24 * * * /usr/bin/python3 /home/ubuntu/send-me-eth/send-me-eth.py`
 
-Now, you can close the terminal and get 0.1 eth every day without doing anything :). Make sure to delete the cron task when you get enough testing ether.
+Now, you can close the terminal and automatically get 0.1 eth every day :). Make sure to delete the cron task when you get enough testing ether.
