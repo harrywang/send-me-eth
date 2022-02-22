@@ -1,6 +1,14 @@
 # About
 a simple automated tool to get testing ether from https://www.rinkebyfaucet.com/
 
+The main goal is to show the followings:
+
+- Automate browsers using Selenium
+- Send emails using SendGrid
+- Schedule scripts using `crontab`
+- Deploy scheduled tasks on AWS EC2 instances
+- Use `.env` to manage environment variables
+
 ## Local Setup
 
 Clone the repo, go to the repo folder, setup the virtual environment, and install the required packages:

@@ -25,7 +25,6 @@ op.add_argument('--window-size=1920,1080')
 
 driver = webdriver.Chrome(service=s, options=op)
 driver.get("https://www.rinkebyfaucet.com/")
-# assert "Rinkeby" in driver.title
 
 # enter the wallet address
 driver.find_element(By.CLASS_NAME, "alchemy-faucet-panel-input-text").send_keys(WALLET_ADDRESS)
