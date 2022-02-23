@@ -4,6 +4,7 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from time import sleep
 import os
+import json
 from dotenv import load_dotenv
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
@@ -12,6 +13,7 @@ from datetime import datetime
 
 # load environment variables from .env file
 load_dotenv()
+WALLET_ADDRESSES = json.loads(os.getenv('WALLET_ADDRESSES'))
 WALLET_ADDRESS = os.getenv('WALLET_ADDRESS')
 SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY')
 FROM_EMAIL = os.getenv('FROM_EMAIL')
@@ -24,14 +26,32 @@ op.add_argument('--headless')  # set headless mode - the browser won't show
 op.add_argument('--window-size=1920,1080')
 
 driver = webdriver.Chrome(service=s, options=op)
-driver.get("https://www.rinkebyfaucet.com/")
 
-# enter the wallet address
-driver.find_element(By.CLASS_NAME, "alchemy-faucet-panel-input-text").send_keys(WALLET_ADDRESS)
+multi_addresses = False  # by default only support one address
 
-# find the button and click
-search_button = driver.find_element(By.CLASS_NAME, 'alchemy-faucet-button')
-search_button.click()
+if multi_addresses:  # multiple addresses
+    for i, address in enumerate(WALLET_ADDRESSES):
+        # enter the wallet address
+        driver.get("https://www.rinkebyfaucet.com/")
+        sleep(2)
+        driver.find_element(By.CLASS_NAME, "alchemy-faucet-panel-input-text").clear()
+        driver.find_element(By.CLASS_NAME, "alchemy-faucet-panel-input-text").send_keys(address)
+
+        # find the button and click
+        search_button = driver.find_element(By.CLASS_NAME, 'alchemy-faucet-button')
+        search_button.click()
+
+        sleep(20)  # pause a few seconds before each request
+else:
+    driver.get("https://www.rinkebyfaucet.com/")
+    sleep(2)
+    # enter the wallet address
+    driver.find_element(By.CLASS_NAME, "alchemy-faucet-panel-input-text").clear()
+    driver.find_element(By.CLASS_NAME, "alchemy-faucet-panel-input-text").send_keys(WALLET_ADDRESS)
+
+    # find the button and click
+    search_button = driver.find_element(By.CLASS_NAME, 'alchemy-faucet-button')
+    search_button.click()
 
 # send an email after each try
 message = Mail(
@@ -48,6 +68,5 @@ try:
 except Exception as e:
     print(e.message)
 
-# use sleep to pause for debugging
-sleep(1)
 driver.close()
+

@@ -6,8 +6,8 @@ The main goal is to show the followings:
 - Automate browsers using Selenium
 - Send emails using SendGrid
 - Schedule scripts using `crontab`
-- Deploy scheduled tasks on AWS EC2 instances
 - Use `.env` to manage environment variables
+- Deploy scheduled tasks on AWS EC2 instances
 
 ## Local Setup
 
@@ -33,16 +33,14 @@ Then, run `python send-me-eth.py` every 24 hours to get 0.1 eth each time.
 
 ## Deploy to AWS EC2
 
-I also show how to deploy the script on AWS EC2 as a scheduled task.
-
 Create an AWS EC2 Ubuntu instance:
 
 - Ubuntu 20.04 (x86)
 - t2.micro (free tier)
 - security group with SSH port 22 inbound enabled - outbound default all open
-- create a new RSA key pair - download the .cer file
+- create a new RSA key pair - download the `.cer` file
 
-SSH to the remote instance, switch to the folder with the `.cer` file:
+Switch to the local folder with the `.cer` key file and connect to the server:
 
 ```
 chmod 400 aws-gmail.cer
