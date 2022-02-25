@@ -13,8 +13,8 @@ from datetime import datetime
 
 # load environment variables from .env file
 load_dotenv()
-WALLET_ADDRESSES = json.loads(os.getenv('WALLET_ADDRESSES'))
 WALLET_ADDRESS = os.getenv('WALLET_ADDRESS')
+WALLET_ADDRESSES = json.loads(os.getenv('WALLET_ADDRESSES'))
 SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY')
 FROM_EMAIL = os.getenv('FROM_EMAIL')
 TO_EMAIL = os.getenv('TO_EMAIL')
@@ -23,11 +23,10 @@ TO_EMAIL = os.getenv('TO_EMAIL')
 s = Service(ChromeDriverManager().install())
 op = webdriver.ChromeOptions()
 op.add_argument('--headless')  # set headless mode - the browser won't show
-op.add_argument('--window-size=1920,1080')
-
+op.add_argument('--window-size=1920,1080')  # set the browser size
 driver = webdriver.Chrome(service=s, options=op)
 
-multi_addresses = False  # by default only support one address
+multi_addresses = False  # Change to True if using multiple addresses
 
 if multi_addresses:  # multiple addresses
     for i, address in enumerate(WALLET_ADDRESSES):
@@ -41,7 +40,7 @@ if multi_addresses:  # multiple addresses
         search_button = driver.find_element(By.CLASS_NAME, 'alchemy-faucet-button')
         search_button.click()
 
-        sleep(20)  # pause a few seconds before each request
+        sleep(10)  # pause a few seconds before each request
 else:
     driver.get("https://www.rinkebyfaucet.com/")
     sleep(2)
@@ -52,6 +51,7 @@ else:
     # find the button and click
     search_button = driver.find_element(By.CLASS_NAME, 'alchemy-faucet-button')
     search_button.click()
+    sleep(2)
 
 # send an email after each try
 message = Mail(
@@ -69,4 +69,3 @@ except Exception as e:
     print(e.message)
 
 driver.close()
-
