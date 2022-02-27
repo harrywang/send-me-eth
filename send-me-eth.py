@@ -39,8 +39,9 @@ if multi_addresses:  # multiple addresses
         # find the button and click
         search_button = driver.find_element(By.CLASS_NAME, 'alchemy-faucet-button')
         search_button.click()
+        print(f'tried #{i+1} address: {address}')
 
-        sleep(10)  # pause a few seconds before each request
+        sleep(5)  # pause a few seconds before each request
 else:
     driver.get("https://www.rinkebyfaucet.com/")
     sleep(2)
