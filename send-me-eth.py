@@ -24,6 +24,9 @@ s = Service(ChromeDriverManager().install())
 op = webdriver.ChromeOptions()
 op.add_argument('--headless')  # set headless mode - the browser won't show
 op.add_argument('--window-size=1920,1080')  # set the browser size
+# user_agent must be specified for headless mode to avoid reCAPTCHA check
+user_agent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.50 Safari/537.36'
+op.add_argument(f'user-agent={user_agent}')
 driver = webdriver.Chrome(service=s, options=op)
 
 multi_addresses = False  # Change to True if using multiple addresses
@@ -39,9 +42,14 @@ if multi_addresses:  # multiple addresses
         # find the button and click
         search_button = driver.find_element(By.CLASS_NAME, 'alchemy-faucet-button')
         search_button.click()
-        print(f'tried #{i+1} address: {address}')
+        sleep(2)
 
+        # make a screenshot for debugging
+        # driver.get_screenshot_as_file("screenshot.png")
+        
+        print(f'tried #{i+1} address: {address}')
         sleep(5)  # pause a few seconds before each request
+
 else:
     driver.get("https://www.rinkebyfaucet.com/")
     sleep(2)
@@ -52,6 +60,8 @@ else:
     # find the button and click
     search_button = driver.find_element(By.CLASS_NAME, 'alchemy-faucet-button')
     search_button.click()
+    
+    print(f'tried 1 address: {WALLET_ADDRESS}')
     sleep(2)
 
 # send an email after each try
