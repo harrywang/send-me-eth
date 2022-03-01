@@ -2,6 +2,7 @@ from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
+from random import randint
 from time import sleep
 import os
 import json
@@ -35,24 +36,24 @@ if multi_addresses:  # multiple addresses
     for i, address in enumerate(WALLET_ADDRESSES):
         # enter the wallet address
         driver.get("https://www.rinkebyfaucet.com/")
-        sleep(2)
+        sleep(randint(5, 15))  # sleep random 5-15 seconds 
         driver.find_element(By.CLASS_NAME, "alchemy-faucet-panel-input-text").clear()
         driver.find_element(By.CLASS_NAME, "alchemy-faucet-panel-input-text").send_keys(address)
 
         # find the button and click
         search_button = driver.find_element(By.CLASS_NAME, 'alchemy-faucet-button')
         search_button.click()
-        sleep(2)
+        sleep(randint(3, 10))  # sleep random 3-10 seconds
 
         # make a screenshot for debugging
-        # driver.get_screenshot_as_file("screenshot.png")
+        # driver.get_screenshot_as_file(f'screenshot{i}.png')
         
         print(f'tried #{i+1} address: {address}')
-        sleep(5)  # pause a few seconds before each request
+        sleep(randint(20, 60))  # pause random 20-60 seconds before each request
 
 else:
     driver.get("https://www.rinkebyfaucet.com/")
-    sleep(2)
+    sleep(randint(5, 15))  # sleep random 5-15 seconds 
     # enter the wallet address
     driver.find_element(By.CLASS_NAME, "alchemy-faucet-panel-input-text").clear()
     driver.find_element(By.CLASS_NAME, "alchemy-faucet-panel-input-text").send_keys(WALLET_ADDRESS)
@@ -62,7 +63,7 @@ else:
     search_button.click()
     
     print(f'tried 1 address: {WALLET_ADDRESS}')
-    sleep(2)
+    sleep(randint(2, 5))
 
 # send an email after each try
 message = Mail(
