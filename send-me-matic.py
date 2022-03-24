@@ -31,6 +31,7 @@ op.add_argument(f'user-agent={user_agent}')
 driver = webdriver.Chrome(service=s, options=op)
 
 multi_addresses = True  # Change to True if using multiple addresses
+time_log = []
 
 if multi_addresses:  # multiple addresses
     for i, address in enumerate(WALLET_ADDRESSES):
@@ -53,7 +54,7 @@ if multi_addresses:  # multiple addresses
 
         # make a screenshot for debugging
         # driver.get_screenshot_as_file(f'screenshot{i}.png')
-        
+        time_log.append(datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
         print(f'tried #{i+1} address: {address}')
         sleep(randint(5, 10))
 
@@ -82,7 +83,7 @@ message = Mail(
     from_email=FROM_EMAIL,
     to_emails=TO_EMAIL,
     subject='Getting More Matic',
-    html_content='<p>Tried to get 0.1 Eth at ' + datetime.now().strftime('%Y-%m-%d %H:%M:%S') + '</p>')
+    html_content='<p>Tried to get more Matic at ' + datetime.now().strftime('%Y-%m-%d %H:%M:%S') + + '</p> <p>Time log: ' + str(time_log) + '</p>')
 try:
     sg = SendGridAPIClient(SENDGRID_API_KEY)
     response = sg.send(message)
