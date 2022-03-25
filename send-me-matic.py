@@ -83,7 +83,7 @@ message = Mail(
     from_email=FROM_EMAIL,
     to_emails=TO_EMAIL,
     subject='Getting More Matic',
-    html_content='<p>Tried to get more Matic at ' + datetime.now().strftime('%Y-%m-%d %H:%M:%S') + + '</p> <p>Time log: ' + str(time_log) + '</p>')
+    html_content='<p>Tried to get more Matic at ' + datetime.now().strftime('%Y-%m-%d %H:%M:%S') + '</p> <p>Time log: ' + str(time_log) + '</p>')
 try:
     sg = SendGridAPIClient(SENDGRID_API_KEY)
     response = sg.send(message)
